@@ -1,4 +1,5 @@
 import os
+import boto3
 import requests
 import anthropic
 from datetime import date
@@ -8,6 +9,11 @@ load_dotenv()
 
 ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
 TAVILY_API_KEY = os.environ["TAVILY_API_KEY"]
+AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+AWS_REGION = os.environ["AWS_REGION"]
+EMAIL_FROM = os.environ["EMAIL_FROM"]
+EMAIL_TO = os.environ["EMAIL_TO"]
 
 today = date.today().strftime("%B %d, %Y")
 
@@ -24,6 +30,24 @@ def search_web(query):
     )
     results = response.json()["results"]
     return [{"title": r["title"], "url": r["url"], "content": r["content"][:500]} for r in results]
+
+
+def send_email(subject, html_body):
+    client = boto3.client(
+        "ses",
+        region_name=AWS_REGION,
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    )
+    client.send_email(
+        Source=EMAIL_FROM,
+        Destination={"ToAddresses": [EMAIL_TO]},
+        Message={
+            "Subject": {"Data": subject},
+            "Body": {"Html": {"Data": html_body}},
+        },
+    )
+    print(f"Email sent to {EMAIL_TO}")
 
 
 # --- Step 1: Run all searches upfront ---
@@ -121,4 +145,5 @@ if html.endswith("```"):
 with open("output.html", "w") as f:
     f.write(html)
 
-print("Done! Open output.html in your browser to preview the email.")
+send_email(f"🗞️ Your Morning Briefing — {today}", html)
+print("Done! Email sent and saved to output.html.")
