@@ -95,7 +95,7 @@ Below are news search results organized by section. Using these results, write a
 
 ## HTML email requirements:
 - Subject line as an HTML comment at the top: <!-- Subject: 🗞️ Your Morning Briefing — {today} -->
-- Header: "Jason's Morning Briefing" with today's date
+- Header: "Daily Morning Briefing" with today's date
 - Subheader: "Your daily AI-curated news digest — balanced, factual, concise."
 - Sections in this order: Technology & AI, World / Geopolitics, Business & Markets, Science & Health, US Politics
 - Each section with a colored left border accent (Tech=blue, World=green, Business=orange, Science=teal, Politics=purple)
