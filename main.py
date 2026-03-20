@@ -78,7 +78,7 @@ client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 print("\nSending results to Claude to write the email...")
 
 response = client.messages.create(
-    model="claude-haiku-4-5-20251001",  # switch to claude-opus-4-6 for final runs
+    model="claude-opus-4-6",
     max_tokens=8096,
     messages=[
         {"role": "user", "content": f"""You are an AI news curator. Today's date is {today}.
@@ -112,7 +112,12 @@ Output only the HTML — no extra commentary before or after it.
 
 # --- Step 4: Save the HTML output ---
 
-html = response.content[0].text
+html = response.content[0].text.strip()
+if html.startswith("```"):
+    html = html.split("\n", 1)[1]
+if html.endswith("```"):
+    html = html.rsplit("```", 1)[0]
+
 with open("output.html", "w") as f:
     f.write(html)
 
