@@ -205,3 +205,21 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# macOS
+.DS_Store
+
+# API keys and secrets
+*.key
+secrets.py
+config.local.py
+credentials.json
+token.json
+
+# Output files
+output/
+*.html
+*.json
+news_cache/
+
+# AI Referenced data
